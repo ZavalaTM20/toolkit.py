@@ -34,11 +34,15 @@ class MacOSToolkit:
     def check_disk_usage(path="/"):
         """Checks the disk usage for a specific path."""
         usage = shutil.disk_usage(path)
+        total = usage.total
+        used = usage.used
+        free = usage.free
+        percent = (used / total) * 100  # Manually calculate the percentage
         return {
-            'Total': usage.total,
-            'Used': usage.used,
-            'Free': usage.free,
-            'Percent': usage.percent
+            'Total': total,
+            'Used': used,
+            'Free': free,
+            'Percent': round(percent, 2)  # Round to 2 decimal places
         }
 
     @staticmethod
@@ -98,11 +102,13 @@ class MacOSToolkit:
         """Returns the MAC address of the primary network interface."""
         interfaces = psutil.net_if_addrs()
         for interface in interfaces:
-            if psutil.net_if_stats()[interface].isup:
+            if psutil.net_if_stats()[interface].isup:  # Check if interface is active
                 for snic in interfaces[interface]:
-                    if snic.family == psutil.AF_LINK:
+                    if snic.family == psutil.AF_LINK:  # Look for the MAC address (AF_LINK)
                         return snic.address
         return "No MAC address found."
+
+
 if __name__ == "__main__":
     toolkit = MacOSToolkit()
 
