@@ -5,7 +5,6 @@ import platform
 import shutil
 from datetime import datetime
 
-
 class MacOSToolkit:
     
     def run_shell_command(command):
